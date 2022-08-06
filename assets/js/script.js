@@ -53,6 +53,8 @@ var createTaskEl = function(taskDataObj) {
     taskDataObj.id = taskIdCounter;
     tasks.push(taskDataObj);
 
+    saveTasks();
+
     var taskActionsEl = createTaskActions(taskIdCounter);
     listItemEl.appendChild(taskActionsEl);
     tasksToDoEl.appendChild(listItemEl);
@@ -60,8 +62,6 @@ var createTaskEl = function(taskDataObj) {
 
     taskIdCounter++;
 
-    console.log(taskDataObj);
-    console.log(taskDataObj.status);
 
 };
 
@@ -114,6 +114,8 @@ var completedEditTask = function(taskName, taskType, taskId) {
         }
     };
 
+    saveTasks();
+
     alert("Task Updated!");
 
     formEl.removeAttribute("data-task-id");
@@ -125,11 +127,9 @@ var taskButtonHandler = function(event) {
     var targetEl = event.target;
 
     if (targetEl.matches(".edit-btn")) {
-        console.log("edit", targetEl);
         var taskId = targetEl.getAttribute("data-task-id");
         editTask(taskId);
     } else if (targetEl.matches(".delete-btn")) {
-        console.log("delete", targetEl);
         var taskId = targetEl.getAttribute("data-task-id");
         deleteTask(taskId);
     }
@@ -137,8 +137,6 @@ var taskButtonHandler = function(event) {
 };
 
 var taskStatusChangeHandler = function(event) {
-    console.log(event.target.value);
-
     var taskId = event.target.getAttribute("data-task-id");
     var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
     var statusValue = event.target.value.toLowerCase();
@@ -156,13 +154,12 @@ var taskStatusChangeHandler = function(event) {
             tasks[i].status = statusValue;
         }
     };
-    console.log(tasks);
+    
+    saveTasks();
 
 };
 
 var editTask = function(taskId) {
-    console.log("editing task #" + taskId);
-
     var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
 
     var taskName = taskSelected.querySelector("h3.task-name").textContent;
@@ -189,6 +186,13 @@ var deleteTask = function(taskId) {
     };
 
     tasks = updateTaskArr;
+
+    saveTasks();
+
+};
+
+var saveTasks = function () {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 
 };
 
